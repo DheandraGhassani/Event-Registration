@@ -47,6 +47,10 @@ Route::middleware(['auth', 'role:administrator'])->get('/administrator', functio
     return view('admindashboard');
 });
 
+Route::middleware(['auth', 'role:member'])->get('/member', function () {
+    return view('memberdashboard');
+});
+
 Route::get('/administrator', function () {
     return view('admindashboard'); // points to resources/views/admindashboard.blade.php
 })->middleware(['auth', 'role:administrator']);

@@ -11,9 +11,12 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $table = 'users';
-    public $timestamps = true;
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $keytype = 'int';
 
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
@@ -24,5 +27,9 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
     ];
 }
