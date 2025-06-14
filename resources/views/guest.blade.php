@@ -214,7 +214,10 @@
             </li>
             <!--end::Fullscreen Toggle-->
             <!--begin::User Menu Dropdown-->
-            <li class="nav-item button">
+            <li class="nav-item ">
+              <form action="{{ route('register') }}">
+                <button type="submit"> REGISTER </button>
+              </form>
               <form action="{{ route('login') }}">
                 <button type="submit"> LOGIN </button>
               </form>
