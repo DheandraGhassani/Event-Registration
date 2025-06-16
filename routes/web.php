@@ -38,7 +38,7 @@ Route::get('/redirect', function () {
         1 => redirect('/member'),    // administrator
         2 => redirect('/administrator'),
         3 => redirect('/finance'),
-        4 => redirect('/comitee'),
+        4 => redirect('/committee'),
         default => redirect('/'),
     };
 })->middleware('auth')->name('redirect');
@@ -51,8 +51,16 @@ Route::middleware(['auth', 'role:member'])->get('/member', function () {
     return view('memberdashboard');
 });
 
-Route::get('/administrator', function () {
-    return view('admindashboard'); // points to resources/views/admindashboard.blade.php
-})->middleware(['auth', 'role:administrator']);
+Route::middleware(['auth', 'role:finance'])->get('/finance', function () {
+    return view('financedashboard');
+});
+
+Route::middleware(['auth', 'role:committee'])->get('/committee', function () {
+    return view('committeedashboard');
+});
+
+/*Route::get('/administrator', function () {
+    return view('admindashboard');
+})->middleware(['auth', 'role:administrator']);*/
 
 require __DIR__.'/auth.php';

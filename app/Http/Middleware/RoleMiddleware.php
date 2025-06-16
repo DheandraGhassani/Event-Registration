@@ -21,7 +21,7 @@ class RoleMiddleware
             'member' => 1,
             'administrator' => 2,
             'finance' => 3,
-            'comitee' => 4,
+            'committee' => 4,
         ];
 
         $allowedRoleIds = array_map(function ($roleName) use ($roleMap) {
