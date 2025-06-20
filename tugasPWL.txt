@@ -1,0 +1,18 @@
+1. Guest
+- Melakukan registrasi sebagai member
+- Melihat daftar event
+
+2. Member
+- Melihat dan melakukan registrasi serta pembayaran terhadap event yang diadakan (Konfirmasi pembayaran dilakukan dengan upload bukti transaksi).
+- Melakukan registrasi daftar ulang pada event dengan menunjukkan qr-code/ bar-code. Proses scan akan dilakukan oleh panitia pada hari kegiatan tersebut berlangsung.
+
+3. Administrator
+- Administrator dapat menambahkan, mengubah, menghapus atau menonaktifkan data tim keuangan dan panitia pelaksana kegiatan.
+
+4. Tim Keuangan
+- Melakukan update status peserta yang telah melakukan pembayaran
+
+5. Tim Panitia Kegiatan
+- Membuka sebuah event. Data standar event adalah nama, tanggal dan waktu pelaksanaan, lokasi, narasumber, poster kegiatan, biaya registrasi, jumlah maksimal peserta.
+- Melakukan scan qr-code/ bar-code untuk peserta yang hadir pada kegiatan.
+- Melakukan upload sertifikat untuk peserta yang hadir pada kegiatan.

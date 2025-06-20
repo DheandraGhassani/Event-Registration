@@ -35,7 +35,7 @@ Route::get('/redirect', function () {
     }
 
     return match ((int)$user->role) {
-        1 => redirect('/member'),    // administrator
+        1 => redirect('/member'),
         2 => redirect('/administrator'),
         3 => redirect('/finance'),
         4 => redirect('/committee'),

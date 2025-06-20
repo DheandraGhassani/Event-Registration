@@ -87,8 +87,8 @@
           <form method="POST" action="">
             @csrf
             <div class="row">
-              <label for="id" class="col-3">ID</label>
-              <input type="text" class="col-3 input-text" name="id" id="id" placeholder="id">
+              <label for="name" class="col-3">Username</label>
+              <input type="text" class="col-3 input-text" name="name" id="name" placeholder="username">
             </div>
             <div class="row">
               <label for="password" class="col-3">Password</label>

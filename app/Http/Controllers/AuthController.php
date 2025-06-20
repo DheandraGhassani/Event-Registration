@@ -9,9 +9,9 @@ class AuthController extends Controller
 {
     public function proseslogin(Request $request)
     {
-        if(Auth::attempt($request->only('id', 'password'))) {
+        if(Auth::attempt($request->only('name', 'password'))) {
             return redirect()->route('redirect');
         }
-        return redirect()->route('login')->with('error', 'Id atau Password Salah');
+        return redirect()->route('login')->with('error', 'Username atau Password Salah');
     }
 }
