@@ -214,13 +214,51 @@
             </li>
             <!--end::Fullscreen Toggle-->
             <!--begin::User Menu Dropdown-->
-            <li class="nav-item ">
-              <form action="{{ route('register') }}">
-                <button type="submit"> REGISTER </button>
-              </form>
-              <form action="{{ route('login') }}">
-                <button type="submit"> LOGIN </button>
-              </form>
+            <li class="nav-item dropdown user-menu">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <img
+                  src="../../dist/assets/img/user2-160x160.jpg"
+                  class="user-image rounded-circle shadow"
+                  alt="User Image"
+                />
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                <!--begin::User Image-->
+                <li class="user-header text-bg-primary">
+                  <img
+                    src="../../dist/assets/img/user2-160x160.jpg"
+                    class="rounded-circle shadow"
+                    alt="User Image"
+                  />
+                  <p>
+                    {{ Auth::user()->name }}
+                  </p>
+                </li>
+                <!--end::User Image-->
+                <!--begin::Menu Body-->
+                <li class="user-body">
+                  <!--begin::Row-->
+                  <div class="row">
+                    <div class="col-4 text-center"><a href="#">Followers</a></div>
+                    <div class="col-4 text-center"><a href="#">Sales</a></div>
+                    <div class="col-4 text-center"><a href="#">Friends</a></div>
+                  </div>
+                  <!--end::Row-->
+                </li>
+                <!--end::Menu Body-->
+                <!--begin::Menu Footer-->
+                <li class="user-footer">
+                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">
+                      Logout
+                    </button>
+                  </form>
+                </li>
+                <!--end::Menu Footer-->
+              </ul>
             </li>
             <!--end::User Menu Dropdown-->
           </ul>
@@ -686,7 +724,7 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">HI WELCOME GUEST</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">HI WELCOME COMMITTEE</h3></div>
               <div class="col-sm-6">
               </div>
             </div>
@@ -697,6 +735,58 @@
         <!--end::App Content Header-->
         <!--begin::App Content-->
         <div class="app-content">
+          <div class="container mt-5">
+            <h2 class="mb-4">Daftar Event yang Dibuat</h2>
+            <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Buat Event Baru</a>
+        
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Event</th>
+                        <th>Tanggal</th>
+                        <th>Lokasi</th>
+                        <!--th>Narasumber</th-->
+                        <!--th>Biaya</th>
+                        <th>Kuota</th>
+                        <th>Poster</th-->
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($events as $index => $event)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $event->name }}</td>
+                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
+                            <td>{{ $event->location }}</td>
+                            <!--td>{{ $event->narasumber }}</td-->
+                            <!--td>Rp{{ number_format($event->biaya, 0, ',', '.') }}</td-->
+                            <!--td>{{ $event->kuota }}</td-->
+                            <!--td>
+                                @if ($event->poster)
+                                    <img src="{{ asset('storage/' . $event->poster) }}" alt="Poster" width="80">
+                                @else
+                                    -
+                                @endif
+                            </td-->
+                            <td>
+                                <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button onclick="return confirm('Yakin ingin menghapus event ini?')" class="btn btn-sm btn-danger">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center">Belum ada event.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+          </div>
         </div>
         <!--end::App Content-->
       </main>

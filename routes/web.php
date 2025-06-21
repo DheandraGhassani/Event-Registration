@@ -3,19 +3,20 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Eventcontroller;
 use App\Http\Controllers\User;
 use App\Http\Controllers\users;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('guest.guest');
 });
 
 Route::get('/admintest', function () {
-    return view('admindashboard');
+    return view('admin.admindashboard');
 });
 
 Route::get('/guesttest', function (){
-    return view('guest');
+    return view('guest.guest');
 });
 
 Route::get('/dashboard', function () {
@@ -44,23 +45,24 @@ Route::get('/redirect', function () {
 })->middleware('auth')->name('redirect');
 
 Route::middleware(['auth', 'role:administrator'])->get('/administrator', function () {
-    return view('admindashboard');
+    return view('admin.admindashboard');
 });
-
 Route::middleware(['auth', 'role:member'])->get('/member', function () {
-    return view('memberdashboard');
+    return view('member.memberdashboard');
 });
 
 Route::middleware(['auth', 'role:finance'])->get('/finance', function () {
-    return view('financedashboard');
+    return view('finance.financedashboard');
 });
 
-Route::middleware(['auth', 'role:committee'])->get('/committee', function () {
+/*Route::middleware(['auth', 'role:committee'])->get('/committee', function () {
     return view('committeedashboard');
-});
+});*/
 
-/*Route::get('/administrator', function () {
-    return view('admindashboard');
-})->middleware(['auth', 'role:administrator']);*/
+Route::middleware(['auth', 'role:committee'])->get('/committee', [EventController::class, 'index'])->name('committee.committeedashboard'); 
+
+Route::middleware(['auth', 'role:committee'])->prefix('committee')->group(function () {
+    Route::resource('/events', EventController::class)->except(['index']);
+});
 
 require __DIR__.'/auth.php';
