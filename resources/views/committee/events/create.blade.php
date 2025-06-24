@@ -738,7 +738,7 @@
         <div class="app-content">
           <div class="container mt-5">
             <h2 class="mb-4">Buat Event Baru</h2>
-
+        
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -748,44 +748,76 @@
                     </ul>
                 </div>
             @endif
-
+        
             <form action="{{ route('events.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
+        
+                {{-- Bagian Event --}}
+                <h4>Informasi Event</h4>
                 <div class="mb-3">
                     <label for="name" class="form-label">Nama Event</label>
                     <input type="text" name="name" class="form-control" id="name" value="{{ old('name') }}" required>
                 </div>
-
+        
                 <div class="mb-3">
                     <label for="description" class="form-label">Deskripsi</label>
                     <textarea name="description" class="form-control" id="description">{{ old('description') }}</textarea>
                 </div>
-
+        
                 <div class="mb-3">
                     <label for="start_date" class="form-label">Tanggal Mulai</label>
                     <input type="datetime-local" name="start_date" class="form-control" id="start_date" value="{{ old('start_date') }}" required>
                 </div>
-
+        
                 <div class="mb-3">
                     <label for="end_date" class="form-label">Tanggal Selesai</label>
                     <input type="datetime-local" name="end_date" class="form-control" id="end_date" value="{{ old('end_date') }}" required>
                 </div>
-
+        
                 <div class="mb-3">
                     <label for="location" class="form-label">Lokasi</label>
                     <input type="text" name="location" class="form-control" id="location" value="{{ old('location') }}" required>
                 </div>
-
-                <!--div class="mb-3">
-                    <label for="poster" class="form-label">Poster (Opsional)</label>
-                    <input type="file" name="poster" class="form-control" id="poster">
-                </div-->
-
+        
+                <hr>
+        
+                {{-- Bagian Sub Event --}}
+                <h4>Sub Event</h4>
+        
+                <div class="mb-3">
+                    <label for="sub_name" class="form-label">Nama Sub Event</label>
+                    <input type="text" name="sub_name" class="form-control" id="sub_name" value="{{ old('sub_name') }}" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="sub_start_time" class="form-label">Waktu Mulai</label>
+                    <input type="datetime-local" name="sub_start_time" class="form-control" id="sub_start_time" value="{{ old('sub_start_time') }}" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="sub_end_time" class="form-label">Waktu Selesai</label>
+                    <input type="datetime-local" name="sub_end_time" class="form-control" id="sub_end_time" value="{{ old('sub_end_time') }}" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="sub_speaker" class="form-label">Narasumber</label>
+                    <input type="text" name="sub_speaker" class="form-control" id="sub_speaker" value="{{ old('sub_speaker') }}">
+                </div>
+        
+                <div class="mb-3">
+                    <label for="sub_location" class="form-label">Lokasi Sub Event</label>
+                    <input type="text" name="sub_location" class="form-control" id="sub_location" value="{{ old('sub_location') }}" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label for="registration_fee" class="form-label">Biaya Pendaftaran</label>
+                    <input type="number" name="registration_fee" class="form-control" step="0.01" value="{{ old('registration_fee') }}" required>
+                </div>
+        
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="{{ route('committee.committeedashboard') }}" class="btn btn-secondary">Batal</a>
             </form>
-          </div>
+         </div>
         </div>
         <!--end::App Content-->
       </main>

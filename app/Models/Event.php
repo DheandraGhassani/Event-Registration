@@ -20,4 +20,9 @@ class Event extends Model
         'is_active',
         'created_at'
     ];
+
+    public function subEvents()
+    {
+        return $this->hasMany(Sub_Events::class, 'event_id');
+    }
 }

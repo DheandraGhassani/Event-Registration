@@ -214,51 +214,19 @@
             </li>
             <!--end::Fullscreen Toggle-->
             <!--begin::User Menu Dropdown-->
-            <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img
-                  src="../../dist/assets/img/user2-160x160.jpg"
-                  class="user-image rounded-circle shadow"
-                  alt="User Image"
-                />
-                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <!--begin::User Image-->
-                <li class="user-header text-bg-primary">
-                  <img
-                    src="../../dist/assets/img/user2-160x160.jpg"
-                    class="rounded-circle shadow"
-                    alt="User Image"
-                  />
-                  <p>
-                    {{ Auth::user()->name }}
-                  </p>
-                </li>
-                <!--end::User Image-->
-                <!--begin::Menu Body-->
-                <li class="user-body">
-                  <!--begin::Row-->
-                  <div class="row">
-                    <div class="col-4 text-center"><a href="#">Followers</a></div>
-                    <div class="col-4 text-center"><a href="#">Sales</a></div>
-                    <div class="col-4 text-center"><a href="#">Friends</a></div>
-                  </div>
-                  <!--end::Row-->
-                </li>
-                <!--end::Menu Body-->
-                <!--begin::Menu Footer-->
-                <li class="user-footer">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">
+            <li class="nav-item d-flex align-items-center gap-3">
+              <!-- Nama user -->
+              <span class="fw-bold">
+                  {{ Auth::user()->name }}
+              </span>
+          
+              <!-- Tombol logout -->
+              <form method="POST" action="{{ route('logout') }}" class="m-0">
+                  @csrf
+                  <button type="submit" class="btn btn-danger btn-sm">
                       Logout
-                    </button>
-                  </form>
-                </li>
-                <!--end::Menu Footer-->
-              </ul>
+                  </button>
+              </form>
             </li>
             <!--end::User Menu Dropdown-->
           </ul>
@@ -736,7 +704,7 @@
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Daftar Event yang Dibuat</h2>
+            <h2 class="mb-4">Daftar Event</h2>
             <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Buat Event Baru</a>
         
             <table class="table table-bordered table-striped">
@@ -746,10 +714,7 @@
                         <th>Nama Event</th>
                         <th>Tanggal</th>
                         <th>Lokasi</th>
-                        <!--th>Narasumber</th-->
-                        <!--th>Biaya</th>
-                        <th>Kuota</th>
-                        <th>Poster</th-->
+                        <th>Sub Event</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -760,16 +725,23 @@
                             <td>{{ $event->name }}</td>
                             <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
                             <td>{{ $event->location }}</td>
-                            <!--td>{{ $event->narasumber }}</td-->
-                            <!--td>Rp{{ number_format($event->biaya, 0, ',', '.') }}</td-->
-                            <!--td>{{ $event->kuota }}</td-->
-                            <!--td>
-                                @if ($event->poster)
-                                    <img src="{{ asset('storage/' . $event->poster) }}" alt="Poster" width="80">
+                            <td>
+                                @if ($event->subEvents->isEmpty())
+                                    <span class="text-muted">Belum ada sub-event</span>
                                 @else
-                                    -
+                                    <ul class="mb-0">
+                                        @foreach ($event->subEvents as $sub)
+                                            <li>
+                                                <strong>{{ $sub->name }}</strong><br>
+                                                {{ \Carbon\Carbon::parse($sub->start_time)->format('d M Y H:i') }} -
+                                                {{ \Carbon\Carbon::parse($sub->end_time)->format('H:i') }}<br>
+                                                {{ $sub->location }}<br>
+                                                Biaya: Rp{{ number_format($sub->registration_fee, 0, ',', '.') }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 @endif
-                            </td-->
+                            </td>
                             <td>
                                 <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" style="display:inline-block;">
@@ -781,12 +753,12 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center">Belum ada event.</td>
+                            <td colspan="6" class="text-center">Belum ada event.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
-          </div>
+          </div>        
         </div>
         <!--end::App Content-->
       </main>

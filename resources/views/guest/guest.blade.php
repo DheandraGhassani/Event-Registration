@@ -92,10 +92,10 @@
             <!--begin::LOGIN REGISTER BUTTON-->
             <li class="nav-item btn-group ">
               <form action="{{ route('register') }}">
-                <button type="submit" class="btn btn-secondary"> REGISTER </button>
+                <button type="submit" class="btn me-1 btn-outline-primary"> REGISTER </button>
               </form>
               <form action="{{ route('login') }}">
-                <button type="submit" class="btn btn-secondary"> LOGIN </button>
+                <button type="submit" class="btn btn-primary"> LOGIN </button>
               </form>
             </li>
             <!--end::LOGIN REGISTER BUTTON-->
@@ -573,6 +573,53 @@
         <!--end::App Content Header-->
         <!--begin::App Content-->
         <div class="app-content">
+          <div class="container mt-5">
+            <h2 class="mb-4">Daftar Event</h2>
+            <!--a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Buat Event Baru</a-->
+        
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Event</th>
+                        <th>Tanggal</th>
+                        <th>Lokasi</th>
+                        <!--th>Narasumber</th-->
+                        <!--th>Biaya</th>
+                        <th>Kuota</th>
+                        <th>Poster</th-->
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($events as $index => $event)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $event->name }}</td>
+                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
+                            <td>{{ $event->location }}</td>
+                            <!--td>{{ $event->narasumber }}</td-->
+                            <!--td>Rp{{ number_format($event->biaya, 0, ',', '.') }}</td-->
+                            <!--td>{{ $event->kuota }}</td-->
+                            <!--td>
+                                @if ($event->poster)
+                                    <img src="{{ asset('storage/' . $event->poster) }}" alt="Poster" width="80">
+                                @else
+                                    -
+                                @endif
+                            </td-->
+                            <td>
+                                <a href="" class="btn btn-sm btn-success">Daftar</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center">Belum ada event.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+          </div>
         </div>
         <!--end::App Content-->
       </main>

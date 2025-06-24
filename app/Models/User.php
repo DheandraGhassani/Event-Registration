@@ -32,4 +32,9 @@ class User extends Authenticatable
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function eventRegistrations()
+    {
+        return $this->hasMany(Event_Registration::class, 'user_id');
+    }
 }

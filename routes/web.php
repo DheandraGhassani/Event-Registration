@@ -4,12 +4,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Eventcontroller;
+use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\users;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::get('/', function () {
+Route::get('/', function() {
     return view('guest.guest');
 });
+
+Route::get('/', [EventController::class, 'publicIndex'])->name('guest.guest');
 
 Route::get('/admintest', function () {
     return view('admin.admindashboard');
@@ -47,22 +51,35 @@ Route::get('/redirect', function () {
 Route::middleware(['auth', 'role:administrator'])->get('/administrator', function () {
     return view('admin.admindashboard');
 });
-Route::middleware(['auth', 'role:member'])->get('/member', function () {
+
+/* Route::middleware(['auth', 'role:member'])->get('/member', function () {
     return view('member.memberdashboard');
-});
+}); */
 
 Route::middleware(['auth', 'role:finance'])->get('/finance', function () {
     return view('finance.financedashboard');
 });
 
-/*Route::middleware(['auth', 'role:committee'])->get('/committee', function () {
-    return view('committeedashboard');
-});*/
 
 Route::middleware(['auth', 'role:committee'])->get('/committee', [EventController::class, 'index'])->name('committee.committeedashboard'); 
 
 Route::middleware(['auth', 'role:committee'])->prefix('committee')->group(function () {
     Route::resource('/events', EventController::class)->except(['index']);
 });
+
+Route::middleware(['auth', 'role:member'])->get('/member', [EventController::class, 'memberIndex'])->name('member.memberdashboard'); 
+
+Route::middleware(['auth', 'role:member'])->prefix('member')->group(function () {
+    // Form pendaftaran
+    Route::get('/events/{id}/register', [EventRegistrationController::class, 'showRegistrationForm'])->name('member.register');
+
+    // Submit form pendaftaran
+    Route::post('/events/{id}/register', [EventRegistrationController::class, 'submitRegistration'])->name('member.register.submit');
+
+    // Status pendaftaran
+    Route::get('/registration/{id}/status', [EventRegistrationController::class, 'showStatus'])->name('member.registration.status');
+});
+
+Route::middleware(['auth', 'role:member'])->get('/member/my-registrations', [EventRegistrationController::class, 'myRegistrations'])->name('member.my_registrations');
 
 require __DIR__.'/auth.php';

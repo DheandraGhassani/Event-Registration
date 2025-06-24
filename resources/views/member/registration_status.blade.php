@@ -3,7 +3,7 @@
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Edit Event</title>
+    <title>Dashboard</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -217,17 +217,17 @@
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
-                  src="../../../dist/assets/img/user2-160x160.jpg"
+                  src="../../dist/assets/img/user2-160x160.jpg"
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
-                <span class="d-none d-md-inline">Alexander Pierce</span>
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
                 <li class="user-header text-bg-primary">
                   <img
-                    src="../../../dist/assets/img/user2-160x160.jpg"
+                    src="../../dist/assets/img/user2-160x160.jpg"
                     class="rounded-circle shadow"
                     alt="User Image"
                   />
@@ -725,7 +725,9 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0"><span class="badge bg-dark text-light px-2 py-2">{{($event->name)}}</span></h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">HI WELCOME MEMBER</h3></div>
+              <div class="col-sm-6">
+              </div>
             </div>
             <!--end::Row-->
           </div>
@@ -735,87 +737,54 @@
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Edit Event</h2>
+            <h2>Status Pendaftaran</h2>
         
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+            @if (session('success'))
+                <div class="alert alert-success mt-3">
+                    {{ session('success') }}
                 </div>
             @endif
         
-            <form action="{{ route('events.update', $event->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-        
-                <!-- Event Info -->
-                <div class="mb-3">
-                    <label for="name" class="form-label">Nama Event</label>
-                    <input type="text" name="name" class="form-control" id="name" value="{{ old('name', $event->name) }}" required>
+            <div class="card mt-4">
+                <div class="card-header bg-secondary text-white">
+                    Informasi Pendaftaran
                 </div>
+                <div class="card-body">
+                    <p><strong>Nama Event:</strong> {{ $registration->subEvent->event->name ?? '-' }}</p>
+                    <p><strong>Sub Event:</strong> {{ $registration->subEvent->name ?? '-' }}</p>
+                    <p><strong>Lokasi:</strong> {{ $registration->subEvent->location ?? '-' }}</p>
+                    <p><strong>Waktu:</strong> {{ \Carbon\Carbon::parse($registration->subEvent->start_time)->format('d M Y H:i') ?? '-' }}</p>
         
-                <div class="mb-3">
-                    <label for="description" class="form-label">Deskripsi</label>
-                    <textarea name="description" class="form-control" id="description">{{ old('description', $event->description) }}</textarea>
+                    <p><strong>Status Pembayaran:</strong> 
+                        <span class="badge 
+                            @if($registration->payment_status === 'approved') bg-success
+                            @elseif($registration->payment_status === 'rejected') bg-danger
+                            @else bg-warning text-dark
+                            @endif">
+                            {{ ucfirst($registration->payment_status) }}
+                        </span>
+                    </p>
+        
+                    <p><strong>Bukti Pembayaran:</strong></p>
+                    @if($registration->payment_proof)
+                        <img src="{{ asset('storage/' . $registration->payment_proof) }}" alt="Bukti Pembayaran" class="img-fluid mb-3" width="300">
+                    @else
+                        <p class="text-muted">Belum ada bukti pembayaran.</p>
+                    @endif
+        
+                    <p><strong>QR Code:</strong></p>
+                    @if($registration->qr_code)
+                        <div class="border p-3 bg-light d-inline-block">
+                            <code>{{ $registration->qr_code }}</code>
+                        </div>
+                    @else
+                        <p class="text-muted">QR code belum tersedia.</p>
+                    @endif
                 </div>
+            </div>
         
-                <div class="mb-3">
-                    <label for="start_date" class="form-label">Tanggal Mulai</label>
-                    <input type="datetime-local" name="start_date" class="form-control" value="{{ old('start_date', \Carbon\Carbon::parse($event->start_date)->format('Y-m-d\TH:i')) }}" required>
-                </div>
-        
-                <div class="mb-3">
-                    <label for="end_date" class="form-label">Tanggal Selesai</label>
-                    <input type="datetime-local" name="end_date" class="form-control" value="{{ old('end_date', \Carbon\Carbon::parse($event->end_date)->format('Y-m-d\TH:i')) }}" required>
-                </div>
-        
-                <div class="mb-3">
-                    <label for="location" class="form-label">Lokasi</label>
-                    <input type="text" name="location" class="form-control" value="{{ old('location', $event->location) }}" required>
-                </div>
-        
-                <hr>
-                <h4 class="mb-3">Edit Sub Events</h4>
-        
-                @foreach ($event->subEvents as $index => $sub)
-                    <input type="hidden" name="sub_events[{{ $index }}][id]" value="{{ $sub->id }}">
-                    <div class="border p-3 mb-3 rounded bg-light">
-                        <div class="mb-2">
-                            <label class="form-label">Nama Sub Event</label>
-                            <input type="text" name="sub_events[{{ $index }}][name]" class="form-control" value="{{ $sub->name }}" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Waktu Mulai</label>
-                            <input type="datetime-local" name="sub_events[{{ $index }}][start_time]" class="form-control"
-                                value="{{ \Carbon\Carbon::parse($sub->start_time)->format('Y-m-d\TH:i') }}" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Waktu Selesai</label>
-                            <input type="datetime-local" name="sub_events[{{ $index }}][end_time]" class="form-control"
-                                value="{{ \Carbon\Carbon::parse($sub->end_time)->format('Y-m-d\TH:i') }}" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Pembicara</label>
-                            <input type="text" name="sub_events[{{ $index }}][speaker]" class="form-control" value="{{ $sub->speaker }}">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Lokasi</label>
-                            <input type="text" name="sub_events[{{ $index }}][location]" class="form-control" value="{{ $sub->location }}">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Biaya Pendaftaran</label>
-                            <input type="number" name="sub_events[{{ $index }}][registration_fee]" class="form-control" value="{{ $sub->registration_fee }}">
-                        </div>
-                    </div>
-                @endforeach
-        
-                <button type="submit" class="btn btn-success">Update</button>
-                <a href="{{ route('committee.committeedashboard') }}" class="btn btn-secondary">Batal</a>
-            </form>
-          </div>        
+            <a href="{{ route('member.memberdashboard') }}" class="btn btn-primary mt-3">Kembali ke Dashboard</a>
+          </div>
         </div>
         <!--end::App Content-->
       </main>

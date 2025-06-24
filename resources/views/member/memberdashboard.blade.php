@@ -736,6 +736,61 @@
         <!--end::App Content Header-->
         <!--begin::App Content-->
         <div class="app-content">
+          <div class="container mt-5">
+            <h2 class="mb-4">Daftar Event</h2>
+        
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Event</th>
+                        <th>Tanggal</th>
+                        <th>Lokasi</th>
+                        <th>Sub Events</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($events as $index => $event)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $event->name }}</td>
+                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
+                            <td>{{ $event->location }}</td>
+                            <td>
+                                @if ($event->subEvents->isEmpty())
+                                    <span class="text-muted">Belum ada sub-event</span>
+                                @else
+                                    <ul class="mb-0">
+                                        @foreach ($event->subEvents as $sub)
+                                            <li>
+                                                <strong>{{ $sub->name }}</strong><br>
+                                                {{ \Carbon\Carbon::parse($sub->start_time)->format('d M Y H:i') }} -
+                                                {{ \Carbon\Carbon::parse($sub->end_time)->format('H:i') }}<br>
+                                                {{ $sub->location }}<br>
+                                                Biaya: Rp{{ number_format($sub->registration_fee, 0, ',', '.') }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </td>
+                            <td>
+                                <form action="{{ route('member.register', $event->id) }}" method="GET" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success">Daftar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center">Belum ada event.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        
+            <a href="{{ route('member.my_registrations') }}" class="btn btn-info mt-3">Lihat Event Saya</a>
+          </div>        
         </div>
         <!--end::App Content-->
       </main>
