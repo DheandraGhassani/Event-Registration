@@ -99,46 +99,46 @@
         <!--end::Container-->
       </nav>
       <!--end::Header-->
-      
       <!--begin::App Main-->
       <main class="app-main">
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Dashboard Finance: Daftar Event</h2>
+            <h2>Tambah User</h2>
         
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Event</th>
-                        <th>Tanggal</th>
-                        <th>Lokasi</th>
-                        <th>Jumlah Sub Event</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($events as $index => $event)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $event->name }}</td>
-                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
-                            <td>{{ $event->location }}</td>
-                            <td>{{ $event->sub_events_count }}</td>
-                            <td>
-                                <a href="{{ route('finance.registrations', $event->id) }}" class="btn btn-info btn-sm">
-                                    Lihat Registrasi
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada event tersedia</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <form action="{{ route('admin.store') }}" method="POST">
+                @csrf
+        
+                <div class="mb-3">
+                    <label>Nama</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+        
+                <div class="mb-3">
+                    <label>Role</label>
+                    <select name="role" class="form-control" required>
+                        <option value="1">Member</option>
+                        <option value="2">Administrator</option>
+                        <option value="3">Finance</option>
+                        <option value="4">Committee</option>
+                    </select>
+                </div>
+        
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ route('admin.admindashboard') }}" class="btn btn-secondary">Batal</a>
+                </div>
+            </form>
           </div>
         </div>
         <!--end::App Content-->

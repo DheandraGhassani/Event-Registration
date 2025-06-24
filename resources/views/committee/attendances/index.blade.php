@@ -99,47 +99,63 @@
         <!--end::Container-->
       </nav>
       <!--end::Header-->
-      
       <!--begin::App Main-->
       <main class="app-main">
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Dashboard Finance: Daftar Event</h2>
+            <h2 class="mb-4">Presensi Peserta</h2>
         
-            <table class="table table-bordered table-striped">
+            @if (session('success'))
+              <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+        
+            <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
                         <th>No</th>
-                        <th>Nama Event</th>
-                        <th>Tanggal</th>
-                        <th>Lokasi</th>
-                        <th>Jumlah Sub Event</th>
+                        <th>Nama</th>
+                        <th>Event</th>
+                        <th>Sub Event</th>
+                        <th>Status Pembayaran</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($events as $index => $event)
+                    @foreach ($registrations as $i => $r)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $event->name }}</td>
-                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
-                            <td>{{ $event->location }}</td>
-                            <td>{{ $event->sub_events_count }}</td>
+                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $r->user->name }}</td>
+                            <td>{{ $r->subEvent->event->name ?? '-' }}</td>
+                            <td>{{ $r->subEvent->name ?? '-' }}</td>
                             <td>
-                                <a href="{{ route('finance.registrations', $event->id) }}" class="btn btn-info btn-sm">
-                                    Lihat Registrasi
-                                </a>
+                                <span class="badge 
+                                    @if($r->payment_status === 'approved') bg-success
+                                    @elseif($r->payment_status === 'rejected') bg-danger
+                                    @else bg-warning text-dark
+                                    @endif">
+                                    {{ ucfirst($r->payment_status) }}
+                                </span>
+                            </td>
+                            <td>
+                              <form method="POST" action="{{ route('attendances.scan', $r->id) }}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="mb-2">
+                                    <input type="file" name="certificate_file" class="form-control form-control-sm" required>
+                                </div>
+                                <button class="btn btn-sm btn-primary mt-1">Presensi</button>
+                              </form>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada event tersedia</td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
-          </div>
+        
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ route('committee.committeedashboard') }}" class="btn btn-secondary">← Kembali ke Dashboard</a>
+                <a href="{{ route('attendances.scanned') }}" class="btn btn-info">Lihat Presensi Tercatat</a>
+            </div>
+          </div>       
         </div>
         <!--end::App Content-->
       </main>

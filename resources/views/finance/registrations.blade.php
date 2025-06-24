@@ -42,7 +42,7 @@
     />
     <!--end::Third Party Plugin(Bootstrap Icons)-->
     <!--begin::Required Plugin(AdminLTE)-->
-    <link rel="stylesheet" href="../../dist/css/adminlte.css" />
+    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
     <!-- apexcharts -->
     <link
@@ -99,42 +99,67 @@
         <!--end::Container-->
       </nav>
       <!--end::Header-->
-      
       <!--begin::App Main-->
       <main class="app-main">
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Dashboard Finance: Daftar Event</h2>
+            <h2 class="mb-4">Registrasi untuk Event: <strong>{{ $event->name }}</strong></h2>
         
-            <table class="table table-bordered table-striped">
+            <a href="{{ route('finance.financedashboard') }}" class="btn btn-secondary mb-3">← Kembali ke Daftar Event</a>
+        
+            <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Event</th>
-                        <th>Tanggal</th>
-                        <th>Lokasi</th>
-                        <th>Jumlah Sub Event</th>
+                        <th>#</th>
+                        <th>Nama Member</th>
+                        <th>Sub Event</th>
+                        <th>Status</th>
+                        <th>Bukti Pembayaran</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($events as $index => $event)
+                    @forelse ($registrations as $i => $registration)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $event->name }}</td>
-                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
-                            <td>{{ $event->location }}</td>
-                            <td>{{ $event->sub_events_count }}</td>
+                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $registration->user->name }}</td>
+                            <td>{{ $registration->subEvent->name ?? '-' }}</td>
                             <td>
-                                <a href="{{ route('finance.registrations', $event->id) }}" class="btn btn-info btn-sm">
-                                    Lihat Registrasi
-                                </a>
+                                <span class="badge
+                                    @if($registration->payment_status === 'approved') bg-success
+                                    @elseif($registration->payment_status === 'rejected') bg-danger
+                                    @else bg-warning text-dark
+                                    @endif">
+                                    {{ ucfirst($registration->payment_status) }}
+                                </span>
+                            </td>
+                            <td>
+                                @if ($registration->payment_proof)
+                                    <a href="{{ asset('storage/' . $registration->payment_proof) }}" target="_blank">Lihat</a>
+                                @else
+                                    Tidak tersedia
+                                @endif
+                            </td>
+                            <td>
+                                @if ($registration->payment_status === 'pending')
+                                    <form action="{{ route('finance.registrations.approve', $registration->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                    </form>
+        
+                                    <form action="{{ route('finance.registrations.reject', $registration->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                    </form>
+                                @else
+                                    <em>Selesai</em>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">Tidak ada event tersedia</td>
+                            <td colspan="6" class="text-center">Belum ada pendaftaran untuk event ini.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -99,47 +99,55 @@
         <!--end::Container-->
       </nav>
       <!--end::Header-->
-      
       <!--begin::App Main-->
       <main class="app-main">
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container mt-5">
-            <h2 class="mb-4">Dashboard Finance: Daftar Event</h2>
+            <h2 class="mb-4">Peserta yang Sudah Melakukan Presensi</h2>
         
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Event</th>
-                        <th>Tanggal</th>
-                        <th>Lokasi</th>
-                        <th>Jumlah Sub Event</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($events as $index => $event)
+            @if ($registrations->isEmpty())
+                <div class="alert alert-info">Belum ada peserta yang melakukan presensi.</div>
+            @else
+                <table class="table table-bordered">
+                    <thead class="table-dark">
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $event->name }}</td>
-                            <td>{{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}</td>
-                            <td>{{ $event->location }}</td>
-                            <td>{{ $event->sub_events_count }}</td>
-                            <td>
-                                <a href="{{ route('finance.registrations', $event->id) }}" class="btn btn-info btn-sm">
-                                    Lihat Registrasi
-                                </a>
-                            </td>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Event</th>
+                            <th>Sub Event</th>
+                            <th>Waktu Presensi</th>
+                            <th>Discan Oleh</th>
+                            <th>Sertifikat</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada event tersedia</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-          </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($registrations as $i => $r)
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $r->user->name }}</td>
+                                <td>{{ $r->subEvent->event->name ?? '-' }}</td>
+                                <td>{{ $r->subEvent->name ?? '-' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($r->attendance->scan_time)->format('d M Y H:i') }}</td>
+                                <td>{{ $r->attendance->scannedBy->name ?? 'N/A' }}</td>
+                                <td>
+                                    @if ($r->attendance->certificate_file)
+                                        <a href="{{ asset('storage/' . $r->attendance->certificate_file) }}" target="_blank">Lihat</a>
+                                    @else
+                                        <span class="text-muted">Belum diunggah</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ route('committee.committeedashboard') }}" class="btn btn-secondary">← Kembali ke Dashboard</a>
+                <a href="{{ route('attendances.index') }}" class="btn btn-outline-primary">🔄 Lihat Daftar Belum Presensi</a>
+            </div>
+          </div>          
         </div>
         <!--end::App Content-->
       </main>

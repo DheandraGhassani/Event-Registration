@@ -29,4 +29,9 @@ class Event_Registration extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function attendance()
+    {
+        return $this->hasOne(Attendances::class, 'registration_id');
+    }
 }
